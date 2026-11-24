@@ -1,0 +1,19 @@
+# Dependências, instaladas localmente apenas para os testes
+node_modules/
+
+# Resultados temporários de ferramentas
+coverage/
+.vite/
+dist/
+*.log
+
+# Arquivos de editor e sistema
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Arquivos de configuração local
+.env
+.env.*
+!.env.example

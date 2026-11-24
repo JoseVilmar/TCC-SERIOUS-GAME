@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Serious Game — BFS e DFS</title>
+<meta name="description" content="Jogo educacional para explorar algoritmos de busca em grafos (BFS e DFS).">
+<link rel="stylesheet" href="css/styles.css">
+
+</head>
+<body>
+
+<header>
+  <div class="logo"></div>
+
+  <div class="header-selectors">
+    <div class="selector-group" id="algoSelectorGroup">
+      <div class="selector-label">ALGORITMO</div>
+      <div class="btn-group">
+        <button class="sel-btn active" id="bfsBtn" onclick="setAlgo('BFS')">BFS</button>
+        <button class="sel-btn" id="dfsBtn" onclick="setAlgo('DFS')">DFS</button>
+      </div>
+    </div>
+    <div class="selector-group" id="graphSelectorGroup">
+      <div class="selector-label">GRAFO</div>
+      <div class="btn-group">
+        <button class="sel-btn active" id="g1Btn" onclick="setGraph(1)">1</button>
+        <button class="sel-btn" id="g2Btn" onclick="setGraph(2)">2</button>
+        <button class="sel-btn" id="g3Btn" onclick="setGraph(3)">3</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="controls">
+<button class="btn" id="tutorialReplayBtn" onclick="startTutorial()" title="Rever tutorial">❓</button>
+<button class="btn" id="themeToggle" onclick="toggleTheme()">🌙 Noturno</button>
+
+    <button class="btn primary" id="startBtn" onclick="startGame()">▶ Iniciar</button>
+    <button class="btn" onclick="resetGame()">↺ Reset</button>
+  </div>
+</header>
+
+<div class="main">
+  <div class="panel-left">
+
+    <div class="panel-section" id="playersSection">
+      <div class="panel-title">Jogadores</div>
+      <div class="player-item" id="turn-row-0">
+        <div class="player-dot" style="background:var(--p1)"></div>
+        <span class="player-name">P1 (você)</span>
+        <span class="player-pos" id="pos0">—</span>
+        <span class="turn-arrow" id="arrow0"></span>
+      </div>
+      <div class="player-item" id="turn-row-1">
+        <div class="player-dot" style="background:var(--p2)"></div>
+        <span class="player-name">P2</span>
+        <span class="player-pos" id="pos1">—</span>
+        <span class="turn-arrow" id="arrow1"></span>
+      </div>
+      <div class="player-item" id="turn-row-2">
+        <div class="player-dot" style="background:var(--p3)"></div>
+        <span class="player-name">P3</span>
+        <span class="player-pos" id="pos2">—</span>
+        <span class="turn-arrow" id="arrow2"></span>
+      </div>
+    </div>
+
+    <div class="panel-section">
+      <div class="panel-title" id="structureLabel">FILA (BFS)</div>
+      <div class="queue-list" id="queueDisplay"></div>
+      <div class="hint-text" id="hintText"></div>
+    </div>
+
+    <div class="panel-section">
+      <div class="panel-title">Exploração</div>
+      <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressFill"></div></div>
+      <div class="progress-label" id="progressLabel">0% explorado — destino oculto</div>
+    </div>
+
+    <div class="panel-section">
+      <div class="score-row">
+        <div>
+          <div class="score-val" id="correctCount">0</div>
+          <div class="score-label">ACERTOS</div>
+        </div>
+        <div style="text-align:right">
+          <div class="score-val" id="wrongCount" style="color:var(--wrong)">0</div>
+          <div class="score-label">ERROS</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel-section">
+      <div class="panel-title">Teletransporte</div>
+      <div class="tele-desc">Troca você de lugar com outro jogador. Desbloqueado durante a exploração e usado uma vez.</div>
+      <div class="tele-btns">
+        <button class="teleport-btn" id="teleBtn2" onclick="useTeleport(1)" disabled>⚡ TROCAR COM P2</button>
+        <button class="teleport-btn" id="teleBtn3" onclick="useTeleport(2)" disabled>⚡ TROCAR COM P3</button>
+      </div>
+      <div class="tele-status" id="teleStatus">Bloqueado</div>
+    </div>
+
+  </div>
+
+  <div class="graph-area"><svg id="graph"></svg></div>
+
+  <!-- Mobile tab bar -->
+  <div class="mob-tabs">
+    <button class="mob-tab active" onclick="mobTab('left')">👥 Jogadores</button>
+    <button class="mob-tab" onclick="mobTab('graph')">🗺 GRAFO</button>
+    <button class="mob-tab" onclick="mobTab('right')">📋 Log</button>
+  </div>
+
+  <div class="panel-right">
+    <div class="panel-section"><div class="panel-title">Log</div></div>
+    <div class="log-list" id="logList"></div>
+  </div>
+</div>
+
+<div class="status-bar">
+  <div class="status-dot" id="statusDot"></div>
+  <span id="statusText">ESCOLHA O ALGORITMO E O GRAFO, DEPOIS INICIE</span>
+</div>
+
+<div class="feedback-toast" id="feedbackToast"></div>
+
+<div class="winner-overlay" id="winnerOverlay">
+  <div class="winner-title" id="winnerTitle">P1 VENCEU!</div>
+  <div class="winner-sub" id="winnerSub">CHEGOU AO DESTINO PRIMEIRO</div>
+  <div class="winner-stats" id="winnerStats"></div>
+  <button class="btn primary" onclick="resetGame()" style="font-size:12px;padding:12px 32px;">↺ JOGAR NOVAMENTE</button>
+</div>
+
+<div class="tutorial-overlay" id="tutorialOverlay">
+  <div class="tutorial-spotlight" id="tutorialSpotlight"></div>
+  <div class="tutorial-tooltip" id="tutorialTooltip">
+    <div class="tutorial-step-count" id="tutorialStepCount"></div>
+    <div class="tutorial-title" id="tutorialTitle"></div>
+    <div class="tutorial-text" id="tutorialText"></div>
+    <div class="tutorial-actions">
+      <button class="tutorial-skip" onclick="skipTutorial()">Pular</button>
+      <button class="btn primary tutorial-next" id="tutorialNextBtn" onclick="nextTutorialStep()">Próximo →</button>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="js/main.js"></script>
+
+</body>
+</html>

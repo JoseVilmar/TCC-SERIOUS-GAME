@@ -1,0 +1,618 @@
+/* Estilos do GraphRace. Ordem das regras preservada da implementação original. */
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+  :root {
+    --bg: #f4f6fb;
+    --surface: #ffffff;
+    --border: #dbe2ea;
+
+    --p1: #22c55e;
+    --p2: #ef4444;
+    --p3: #f59e0b;
+
+    --node-default: #ffffff;
+    --node-border: #cbd5e1;
+
+    --text: #1f2937;
+    --muted: #6b7280;
+
+    --accent: #3b82f6;
+    --correct: #22c55e;
+    --wrong: #ef4444;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  
+
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    background: white;
+    flex-wrap: wrap;
+    gap: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+  }
+  .logo {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0;
+  }
+  .header-selectors { display:flex; gap:12px; align-items:center; }
+  .selector-group { display:flex; flex-direction:column; gap:4px; }
+  .selector-label { font-size:8px; color:var(--muted); letter-spacing:2px; }
+  .btn-group { display:flex; gap:4px; }
+  .sel-btn {
+    background:var(--node-default); border:1px solid var(--node-border);
+    color:var(--muted); font-family:'Space Mono',monospace;
+    font-size:10px; padding:5px 10px; cursor:pointer; letter-spacing:1px; transition:all 0.2s;
+  }
+  .sel-btn.active { border-color:var(--accent); color:var(--accent); background:rgba(102,68,255,0.1); }
+  .controls { display:flex; gap:6px; align-items:center; }
+  .btn {
+    background:transparent; border:1px solid var(--border); color:var(--text);
+    font-family:'Space Mono',monospace; font-size:10px; padding:6px 12px;
+    cursor:pointer; letter-spacing:2px; transition:all 0.2s;
+  }
+  .btn:hover { border-color:var(--p1); color:var(--p1); }
+  .btn.primary { border-color:var(--p1); color:var(--p1); }
+  .btn.primary:hover { background:var(--p1); color:var(--bg); }
+  .btn:disabled { opacity:0.3; cursor:not-allowed; }
+
+  .main { display:flex; flex:1; overflow:hidden; min-height:0; }
+
+  .panel-left {
+    width:190px; background:var(--surface);
+    border-right:1px solid var(--border); display:flex; flex-direction:column; overflow-y:auto;
+    flex-shrink:0;
+  }
+  .panel-section { border-bottom:1px solid var(--border); padding:11px 13px; }
+  .panel-title { font-size:9px; letter-spacing:3px; color:var(--muted); margin-bottom:8px; text-transform:uppercase; }
+
+  .player-item {
+    display:flex; align-items:center; gap:6px;
+    padding:5px 5px; font-size:10px; border-radius:2px; transition:background 0.2s;
+  }
+  .player-item.active-turn { background:rgba(102,68,255,0.14); }
+  .player-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+  .player-name { color:var(--text); flex:1; font-size:10px; }
+  .player-pos { color:var(--muted); font-size:9px; }
+  .turn-arrow { color:var(--accent); font-size:10px; min-width:10px; }
+
+  .queue-list { display:flex; flex-direction:column; gap:3px; max-height:110px; overflow-y:auto; }
+  .queue-item {
+    background:var(--node-default); border:1px solid var(--node-border);
+    padding:3px 7px; font-size:10px; color:var(--accent); animation:slideIn 0.25s ease;
+  }
+  .queue-item.next { border-color:var(--p3); color:var(--p3); background:rgba(245,200,0,0.07); }
+  @keyframes slideIn { from{opacity:0;transform:translateX(-8px)} to{opacity:1;transform:translateX(0)} }
+
+  .progress-bar-wrap { margin-top:6px; background:var(--node-default); border:1px solid var(--node-border); height:8px; border-radius:1px; overflow:hidden; }
+  .progress-bar-fill { height:100%; background:var(--accent); transition:width 0.4s ease; width:0%; }
+  .progress-label { font-size:9px; color:var(--muted); margin-top:4px; letter-spacing:1px; }
+
+  .score-row { display:flex; justify-content:space-between; }
+  .score-val { color:var(--p1); font-family:'Bebas Neue',sans-serif; font-size:20px; letter-spacing:1px; }
+  .score-label { font-size:9px; color:var(--muted); letter-spacing:2px; }
+
+  .tele-desc { font-size:9px; color:var(--muted); line-height:1.5; margin-bottom:6px; }
+  .tele-btns { display:flex; flex-direction:column; gap:4px; margin-bottom:5px; }
+  .teleport-btn {
+    background:transparent; border:1px solid var(--p3); color:var(--p3);
+    font-family:'Space Mono',monospace; font-size:9px; padding:5px 7px;
+    cursor:pointer; letter-spacing:1px; width:100%; transition:all 0.2s; text-align:left;
+  }
+  .teleport-btn:hover:not(:disabled) { background:rgba(245,200,0,0.1); }
+  .teleport-btn:disabled { opacity:0.22; cursor:not-allowed; border-color:var(--muted); color:var(--muted); }
+  .tele-status { font-size:9px; color:var(--muted); letter-spacing:1px; }
+  .hint-text { font-size:9px; color:var(--p3); letter-spacing:1px; margin-top:4px; line-height:1.5; }
+
+  .graph-area {
+    flex:1; position:relative; overflow:hidden;
+    background:radial-gradient(ellipse at center,#0d0d1a 0%,var(--bg) 70%);
+  }
+  svg#graph { width:100%; height:100%; }
+
+  .edge { stroke:var(--node-border); stroke-width:1.5; transition:all 0.4s; }
+  .edge.explored { stroke:var(--accent); stroke-width:2; opacity:0.45; }
+
+  .node-circle {
+    fill:var(--node-default); stroke:var(--node-border);
+    stroke-width:2; transition:all 0.3s ease; cursor:default;
+  }
+  .node-circle.hidden-dest { fill:#0d0d18; stroke:#222233; stroke-dasharray:4 2; }
+  .node-circle.revealed { animation:revealPulse 0.8s ease; }
+  .node-circle.clickable {
+    cursor:pointer; stroke:var(--p3); stroke-width:2.5;
+    filter:drop-shadow(0 0 7px rgba(245,200,0,0.55));
+    animation:nodePulse 0.85s ease-in-out infinite alternate;
+  }
+  .node-circle.move-clickable {
+    cursor:pointer; stroke:var(--p1); stroke-width:2.5;
+    filter:drop-shadow(0 0 7px rgba(0,245,160,0.5));
+    animation:nodePulse 0.85s ease-in-out infinite alternate;
+  }
+  .node-circle.current { stroke:var(--accent); stroke-width:3; filter:drop-shadow(0 0 8px var(--accent)); }
+  .node-circle.destination { stroke:white; stroke-width:2; stroke-dasharray:4 2; }
+  .node-circle.correct-flash { stroke:var(--correct); fill:rgba(0,245,160,0.15); filter:drop-shadow(0 0 14px var(--correct)); }
+  .node-circle.wrong-flash { stroke:var(--wrong); fill:rgba(245,0,74,0.15); filter:drop-shadow(0 0 14px var(--wrong)); }
+  @keyframes nodePulse { from{stroke-width:2} to{stroke-width:3.5} }
+  @keyframes revealPulse {
+    0%{filter:drop-shadow(0 0 0px white)} 50%{filter:drop-shadow(0 0 20px white)} 100%{filter:none}
+  }
+
+  .node-label {
+    fill:var(--muted); font-family:'Space Mono',monospace;
+    font-size:11px; text-anchor:middle; dominant-baseline:middle;
+    pointer-events:none; transition:fill 0.4s;
+  }
+  .node-label.hidden { fill:#1a1a2a; }
+  .player-token { transition:all 0.5s cubic-bezier(0.34,1.56,0.64,1); }
+
+  .panel-right {
+    width:190px; background:var(--surface);
+    border-left:1px solid var(--border); display:flex; flex-direction:column;
+    flex-shrink:0;
+  }
+  .log-list { flex:1; overflow-y:auto; padding:11px; display:flex; flex-direction:column; gap:4px; }
+
+  /* ── MOBILE ── */
+  @media (max-width: 600px) {
+    header { padding:8px 12px; gap:6px; }
+    .logo {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0;
+  }
+    .sel-btn { font-size:9px; padding:4px 8px; }
+    .btn { font-size:9px; padding:5px 10px; }
+
+    body { overflow:hidden; height:100dvh; }
+
+    .main {
+      flex-direction:column;
+      overflow:hidden;
+    }
+
+    /* Graph SEMPRE ocupa todo o espaço entre o header e a barra de abas —
+       não depende mais de qual aba está selecionada (ver .panel-left/
+       .panel-right logo abaixo: agora são uma "gaveta" flutuante por cima
+       do grafo, não mais um item de layout que divide espaço com ele). */
+    .graph-area {
+      flex:1;
+      min-height:0;
+      order:1;
+    }
+
+    /* Painéis Jogadores/Log: gaveta flutuante ancorada acima da barra de
+       abas (nunca dividem espaço com o grafo — por isso ele não precisa
+       ser reconstruído/redimensionado ao trocar de aba, e não sobra vão
+       em branco nem ele fica pequeno preso num espaço grande). */
+    .panel-left, .panel-right {
+      display:none;
+      position:fixed;
+      left:0; right:0;
+      bottom:44px; /* = altura fixa de .mob-tabs, ver abaixo — fica coladinho acima da barra, sem vão nem sobreposição */
+      width:100%;
+      border:none;
+      border-top:1px solid var(--border);
+      max-height:50vh;
+      overflow-y:auto;
+      flex-direction:row;
+      flex-wrap:wrap;
+      z-index:10;
+      box-shadow:0 -4px 16px rgba(0,0,0,0.15);
+    }
+    .panel-left.mob-active, .panel-right.mob-active {
+      display:flex;
+    }
+    /* Stack sections horizontally on mobile panels */
+    .panel-left .panel-section, .panel-right .panel-section {
+      flex:1; min-width:140px;
+    }
+
+    /* Tab bar — altura fixa (usada como referência pelo "bottom" da gaveta
+       acima) e z-index maior que os painéis, pra continuar clicável mesmo
+       com a gaveta aberta por cima do grafo. */
+    .mob-tabs {
+      display:flex;
+      order:2;
+      height:44px;
+      background:var(--surface);
+      border-top:1px solid var(--border);
+      border-bottom:1px solid var(--border);
+      position:relative;
+      z-index:20;
+    }
+
+    /* Status bar smaller */
+    .status-bar { font-size:9px; padding:6px 12px; letter-spacing:1px; }
+  }
+
+  /* hide tab bar on desktop — escopado explicitamente pra não vazar pro
+     mobile (bug: antes essa regra não tinha condição de largura nenhuma, e
+     por vir depois do @media(max-width:600px) acima, acabava escondendo a
+     barra de abas em QUALQUER tela, inclusive no celular) */
+  @media (min-width: 601px) {
+    .mob-tabs { display:none; }
+  }
+
+  .mob-tab {
+    flex:1; padding:8px 4px; background:transparent;
+    border:none; color:var(--muted); font-family:'Space Mono',monospace;
+    font-size:9px; letter-spacing:2px; cursor:pointer; text-align:center;
+    transition:all 0.2s; border-right:1px solid var(--border);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .mob-tab:last-child { border-right:none; }
+  .mob-tab.active { color:var(--accent); background:rgba(102,68,255,0.1); }
+  .log-item {
+    font-size:9px; color:var(--muted); letter-spacing:1px;
+    padding:4px 0; border-bottom:1px solid var(--border);
+    animation:fadeIn 0.3s ease; line-height:1.4;
+  }
+  .log-item.correct { color:var(--correct); }
+  .log-item.wrong { color:var(--wrong); }
+  .log-item.info { color:var(--accent); }
+  .log-item.warn { color:var(--p3); }
+  .log-item span { color:var(--text); }
+  @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+
+  .status-bar {
+    padding:7px 20px; background:var(--surface); border-top:1px solid var(--border);
+    display:flex; align-items:center; gap:14px; font-size:10px; color:var(--muted); letter-spacing:2px;
+  }
+  .status-dot { width:6px; height:6px; border-radius:50%; background:var(--muted); }
+  .status-dot.waiting { background:var(--p3); animation:pulse 0.7s infinite; }
+  .status-dot.running { background:var(--p1); }
+  .status-dot.moving { background:var(--p1); animation:pulse 0.5s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.2} }
+
+  .feedback-toast {
+    position:fixed; top:72px; left:50%;
+    transform:translateX(-50%) translateY(-16px);
+    padding:9px 22px; font-family:'Bebas Neue',sans-serif;
+    font-size:22px; letter-spacing:4px; border:1px solid;
+    opacity:0; transition:all 0.28s ease; z-index:150; pointer-events:none;
+  }
+  .feedback-toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+  .feedback-toast.correct { color:var(--correct); border-color:var(--correct); background:rgba(0,245,160,0.09); }
+  .feedback-toast.wrong { color:var(--wrong); border-color:var(--wrong); background:rgba(245,0,74,0.09); }
+  .feedback-toast.info { color:var(--accent); border-color:var(--accent); background:rgba(102,68,255,0.09); }
+  .feedback-toast.warn { color:var(--p3); border-color:var(--p3); background:rgba(245,200,0,0.09); }
+
+  .winner-overlay {
+    position:fixed; inset:0; background:rgba(0,0,0,0.88);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    z-index:200; opacity:0; pointer-events:none; transition:opacity 0.5s;
+  }
+  .winner-overlay.show { opacity:1; pointer-events:all; }
+  .winner-title { font-family:'Bebas Neue',sans-serif; font-size:68px; letter-spacing:8px; margin-bottom:8px; }
+  .winner-sub { font-size:11px; color:var(--muted); letter-spacing:4px; margin-bottom:8px; }
+  .winner-stats { font-size:10px; color:var(--muted); letter-spacing:2px; margin-bottom:28px; text-align:center; line-height:1.9; white-space:pre-line; }
+
+  /* ─── TUTORIAL ─────────────────────────────────────────────────────────── */
+  .tutorial-overlay {
+    position:fixed; inset:0; z-index:400;
+    opacity:0; pointer-events:none; transition:opacity 0.3s;
+  }
+  .tutorial-overlay.show { opacity:1; pointer-events:all; }
+  .tutorial-spotlight {
+    position:fixed; border-radius:14px;
+    /* "buraco" na tela escura: a sombra gigante escurece tudo, exceto a
+       própria caixa (que fica transparente) — sem precisar de clip-path/mask */
+    box-shadow:0 0 0 9999px rgba(8,8,16,0.80);
+    border:2px solid var(--accent);
+    transition:all 0.4s cubic-bezier(0.65,0,0.35,1);
+    pointer-events:none;
+  }
+  .tutorial-tooltip {
+    position:fixed; max-width:300px; width:calc(100% - 40px);
+    background:var(--surface); color:var(--text);
+    border-radius:14px; padding:18px 20px;
+    box-shadow:0 10px 32px rgba(0,0,0,0.4);
+    transition:all 0.4s cubic-bezier(0.65,0,0.35,1);
+    font-family:'Inter',sans-serif;
+  }
+  .tutorial-step-count {
+    font-family:'Space Mono',monospace; font-size:10px; letter-spacing:2px;
+    color:var(--accent); margin-bottom:6px;
+  }
+  .tutorial-title { font-size:16px; font-weight:700; margin-bottom:8px; }
+  .tutorial-text { font-size:13px; color:var(--muted); line-height:1.5; margin-bottom:16px; }
+  .tutorial-actions { display:flex; justify-content:space-between; align-items:center; gap:12px; }
+  .tutorial-skip {
+    background:none; border:none; color:var(--muted); font-size:12px;
+    cursor:pointer; text-decoration:underline; padding:4px;
+  }
+  .tutorial-next { font-size:12px; padding:9px 18px; }
+
+.btn,
+.sel-btn,
+.teleport-btn {
+  background: white !important;
+  border: 1px solid var(--border) !important;
+  color: var(--text) !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 13px !important;
+  padding: 10px 14px !important;
+  border-radius: 10px !important;
+  cursor: pointer;
+  transition: 0.2s ease !important;
+  letter-spacing: 0 !important;
+}
+
+.btn:hover,
+.sel-btn:hover,
+.teleport-btn:hover {
+  border-color: var(--accent) !important;
+  transform: translateY(-1px);
+}
+
+.btn.primary {
+  background: var(--accent) !important;
+  color: white !important;
+  border: none !important;
+}
+
+.btn.primary:hover {
+  background: #2563eb !important;
+  color: white !important;
+}
+
+.sel-btn.active {
+  background: #dbeafe !important;
+  border-color: var(--accent) !important;
+  color: var(--accent) !important;
+}
+
+/* Visual "card" moderno (branco, cantos arredondados, sombra) dos painéis —
+   escopado só pro desktop. Antes essa regra não tinha condição de largura
+   nenhuma e usava !important na largura, então sobrescrevia — mesmo no
+   celular — a regra original do @media(max-width:600px) que faz os
+   painéis ocuparem 100% da tela e aparecerem só quando a aba deles está
+   ativa. Resultado no celular: os dois painéis ficavam sempre visíveis,
+   travados em 220px, com as seções internas empilhadas em vez de lado a
+   lado — a barra de abas (já corrigida acima) não tinha como ajudar porque
+   a visibilidade dos painéis nem dependia mais dela. */
+@media (min-width: 601px) {
+  .panel-left,
+  .panel-right {
+    width: 220px !important;
+    background: white !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 16px !important;
+    margin: 12px !important;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+}
+
+.panel-title {
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  color: var(--muted) !important;
+  margin-bottom: 10px !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+}
+
+.graph-area {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  background: #eef2ff !important;
+  border-radius: 20px;
+  margin: 12px 0;
+}
+
+.node-circle {
+  fill: var(--node-default);
+  stroke: var(--node-border);
+  stroke-width: 2;
+  transition: 0.2s ease;
+}
+
+/* .node-circle.clickable / .move-clickable: propositalmente NÃO redefinidas
+   aqui. A regra base (perto do início deste arquivo) já as diferencia bem —
+   âmbar (--p3) para opções de palpite, verde (--p1) para opções de
+   movimento, com brilho pulsante — e usa cores diferentes de --accent, que
+   agora é a cor de preenchimento dos nós explorados (ver colorNode em
+   09-visuals.js). Uma regra aqui forçando as duas pra --accent!important já
+   causou um nó "todo azul" sem contorno visível quando o nó já estava
+   explorado — não reintroduzir isso. */
+
+.log-item {
+  font-size: 13px !important;
+  color: var(--text) !important;
+  padding: 10px !important;
+  border-radius: 10px !important;
+  background: #f9fafb !important;
+  border: 1px solid #e5e7eb !important;
+  line-height: 1.5 !important;
+}
+
+.status-bar {
+  padding: 12px 20px !important;
+  background: white !important;
+  border-top: 1px solid var(--border) !important;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px !important;
+  color: var(--muted) !important;
+  letter-spacing: 0 !important;
+}
+
+.feedback-toast {
+  position: fixed;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 12px 20px !important;
+  border-radius: 12px !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0 !important;
+}
+
+.player-item,
+.queue-item,
+.progress-bar-wrap,
+.teleport-btn,
+.mob-tab {
+  border-radius: 10px !important;
+}
+
+.node-label {
+  font-family: 'Inter', sans-serif !important;
+  fill: #08080f !important;
+}
+
+.selector-label,
+.score-label,
+.progress-label,
+.tele-status,
+.hint-text {
+  letter-spacing: 0 !important;
+}
+
+.winner-title {
+  font-family: 'Inter', sans-serif !important;
+  font-size: 48px !important;
+  letter-spacing: 0 !important;
+}
+
+.winner-sub,
+.winner-stats {
+  letter-spacing: 0 !important;
+}
+
+.edge {
+  stroke: #cbd5e1 !important;
+}
+
+.edge.explored {
+  stroke: var(--accent) !important;
+  opacity: 0.5;
+}
+
+header {
+  display: grid !important;
+  grid-template-columns: 1fr auto 1fr !important;
+  align-items: center !important;
+}
+
+.logo {
+  width: auto;
+  min-width: 140px;
+}
+
+.header-selectors {
+  justify-self: center !important;
+}
+
+.controls {
+  justify-self: end !important;
+}
+
+@media (max-width: 700px) {
+  header {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+  }
+
+  .controls {
+    justify-self: center !important;
+  }
+
+  .logo {
+    display: none !important;
+  }
+}
+
+body.dark-mode {
+  --bg: #111827;
+  --surface: #1f2937;
+  --border: #374151;
+
+  --node-default: #1f2937;
+  --node-border: #4b5563;
+
+  --text: #f3f4f6;
+  --muted: #9ca3af;
+
+  background: var(--bg);
+  color: var(--text);
+}
+
+body.dark-mode header,
+body.dark-mode .panel-left,
+body.dark-mode .panel-right,
+body.dark-mode .status-bar {
+  background: var(--surface) !important;
+  color: var(--text) !important;
+}
+
+body.dark-mode .graph-area {
+  background: #172036 !important;
+}
+
+body.dark-mode .log-item,
+body.dark-mode .queue-item,
+body.dark-mode .player-item {
+  background: #273244 !important;
+  color: var(--text) !important;
+  border-color: #3b475b !important;
+}
+
+body.dark-mode .btn,
+body.dark-mode .sel-btn,
+body.dark-mode .teleport-btn {
+  background: #273244 !important;
+  color: white !important;
+  border-color: #42516b !important;
+}
+
+body.dark-mode .node-label {
+  fill: #f3f4f6 !important;
+}
+
+body.dark-mode .edge {
+  stroke: #4b5563 !important;
+}
+
+body.dark-mode .progress-bar-wrap {
+  background: #273244 !important;
+}
+
+/* Fix: show hidden destination '?' in light mode and keep it visible in dark mode */
+.node-label.hidden {
+  fill: #ffffff !important;
+}
+body.dark-mode .node-label.hidden {
+  fill: var(--text) !important;
+}
+
+/* Fix: ensure active selector buttons (BFS/DFS, GRAFO 1/2/3) remain highlighted in dark mode */
+body.dark-mode .sel-btn.active {
+  color: var(--accent) !important;
+  background: rgba(59,130,246,0.12) !important;
+  border-color: var(--accent) !important;
+}

@@ -1,0 +1,18 @@
+{
+  "name": "graphrace",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "jsdom": "^29.1.1",
+    "vitest": "^1.0.0"
+  },
+  "private": true,
+  "description": "Jogo educacional digital para explorar BFS e DFS em grafos",
+  "engines": {
+    "node": "^20.19.0 || ^22.13.0 || >=24.0.0"
+  }
+}
