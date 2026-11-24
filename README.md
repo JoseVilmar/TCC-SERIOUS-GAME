@@ -1,12 +1,14 @@
-# GraphRace
+# Jogo Educacional de Algoritmos de Busca em Grafos
 
 **Jogo educacional digital para explorar os algoritmos de busca em largura (BFS) e em profundidade (DFS).**
 
-No GraphRace, o estudante não apenas observa uma busca em grafos: ele **prevê o próximo nó que será expandido**, recebe feedback sobre sua escolha e utiliza os nós explorados para avançar em uma corrida contra dois adversários automatizados.
+Neste jogo, o estudante não apenas observa uma busca em grafos: ele **prevê o próximo nó que será expandido**, recebe feedback sobre sua escolha e utiliza os nós explorados para avançar em uma corrida contra dois adversários automatizados.
 
 O projeto foi desenvolvido como artefato do Trabalho de Conclusão de Curso (TCC) de **José Vilmar Brito Sousa**, do curso de Engenharia de Software da **Universidade Federal do Ceará (UFC) — Campus de Russas**.
 
-![Interface inicial do GraphRace, com o primeiro grafo e os painéis da partida](assets/preview.png)
+**[Acessar o jogo online (GitHub Pages)](https://josevilmar.github.io/TCC-SERIOUS-GAME/)**
+
+![Interface inicial do jogo educacional, com o primeiro grafo e os painéis da partida](assets/preview.png)
 
 *Interface inicial do jogo, com o Grafo 1 selecionado.*
 
@@ -24,7 +26,7 @@ O projeto foi desenvolvido como artefato do Trabalho de Conclusão de Curso (TCC
 
 ## Objetivo e funcionalidades
 
-O GraphRace propõe uma atividade de previsão e tomada de decisão durante a execução de algoritmos de busca. Seu foco está na **ordem de exploração dos vértices** e nas diferenças entre as estruturas utilizadas por BFS (fila) e DFS (pilha).
+O jogo propõe uma atividade de previsão e tomada de decisão durante a execução de algoritmos de busca. Seu foco está na **ordem de exploração dos vértices** e nas diferenças entre as estruturas utilizadas por BFS (fila) e DFS (pilha).
 
 O jogo oferece:
 
@@ -79,7 +81,7 @@ npx serve .
 ## Organização do projeto
 
 ```text
-GraphRace/
+TCC-SERIOUS-GAME/
 ├── index.html              # Marcação da interface e ponto de entrada da página
 ├── css/
 │   └── styles.css          # Estilos, temas e adaptações responsivas
@@ -187,11 +189,11 @@ Os testes automatizados verificam uma parte das regras e da manipulação do DOM
 
 ## Publicação
 
-O GraphRace pode ser hospedado em um serviço de **arquivos estáticos**.
+O jogo pode ser hospedado em um serviço de **arquivos estáticos**.
 
-**GitHub Pages:** envie os arquivos para um repositório e, nas configurações de **Pages**, escolha a publicação a partir da branch principal e da pasta raiz (`/`). O arquivo `index.html` é o ponto de entrada.
+**GitHub Pages — versão disponível online:** o jogo está publicado em **[https://josevilmar.github.io/TCC-SERIOUS-GAME/](https://josevilmar.github.io/TCC-SERIOUS-GAME/)**. A publicação utiliza a branch `main` e a pasta `/ (root)`, com `index.html` como ponto de entrada. Não é necessário executar um build.
 
-**Netlify:** importe o repositório ou envie a pasta do projeto para um deploy manual. Não há comando de build; publique a **raiz do projeto**.
+**Netlify — utilizado durante a experimentação:** o Netlify foi empregado para disponibilizar o jogo aos participantes na etapa de aplicação experimental do TCC. A disponibilização atual pelo GitHub Pages permite acessar e demonstrar o artefato diretamente pelo repositório.
 
 O `node_modules/`, os resultados de cobertura e arquivos locais são excluídos pelo `.gitignore`. O `package-lock.json` deve permanecer versionado para garantir instalações de teste reprodutíveis.
 
